@@ -1,0 +1,65 @@
+---
+title: "functions2"
+author: "Sashin"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Week 2
+### Functions 2
+#### Lazy Evaluation
+Arguments to functions are evaluated lazily, so they are evaluated only as needed.
+```{r}
+f <- function(a,b){
+  a*2
+}
+f(2)
+```
+This function never actually uses the argument b. So calling f(2) will not produce an error because the 2 gets positionally matched to a.
+
+
+
+```{r}
+h <- function(a,b){
+  print(a)
+  print(b)
+}
+#h(45)
+```
+*Error in print(b) : argument "b" is missing, with no default*
+
+Notice that "45" got printed first before the error was triggered. This is because b did not have to be evaluated until after print(a). Once the function tried to evaluate print(b) it had to throw an error.
+
+
+
+
+#### The ... Argument
+This indicates a variable number of arguments that are usually passed on to other functions.
+
+* ... is often used when extending another function and you don't want to copy the entire argument list of the original function
+
+```{r}
+myplot <-function(x,y, type="l", ...){
+  plot(x,y,type=type, ...)
+}
+```
+* Generic functions use ... so that extra arguments can be passed to methods (more later).
+
+```{r}
+mean
+```
+* The ... argument is necessary when the number of arguments passed to the function cannot be known in advance
+```{r}
+args(paste) # concatenates a set of strings, creates a vector of strings
+args(cat)   # concatenates a string, prints to file
+```
+* One catch with ... is that any arguments that appear after it on the argument list must be named explicitly and cannot be partially matched.
+```{r}
+paste("a","b", sep=":")
+paste("a","b", se=":")
+```
+
