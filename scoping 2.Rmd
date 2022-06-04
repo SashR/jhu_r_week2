@@ -1,0 +1,82 @@
+---
+title: "jhu_w2_3"
+author: "Sashin"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Week 2 -- Scoping Rules -- Symbol Binding
+### Lexical scoping 
+Why does all this matter?
+
+* Typically, a function is defined in the global environment, so that the values of the free variables are found in the user's workspace.
+* This behavior is logical for most people and is usually the *right thing* to do.
+* However in R you can have functions defined *insided other functions*. Languages like C don't let you do this.
+* Now things get interesting -- in this case the environment in which a function is defined in is the body of another function.
+
+
+```{r}
+make.power <- function(n){
+  pow <- function(x){
+    x*n
+  }
+}
+
+cube <-make.power(3)
+square <- make.power(2)
+cube(3)
+square(3)
+```
+These functions can be considered as constructor functions i.e. they create another function.
+
+
+### Exploring a Function closure
+Whats in the function's environment?
+```{r}
+ls(environment(cube))
+get("n", environment(cube))
+ls(environment(square))
+get("n", environment(square))
+```
+
+Lexical vs Dynamic Scoping
+
+```{r}
+y <-10
+
+f <- function(x){
+  y <- 2
+  y*2 + g(x)
+}
+g <- function(x){
+  x*y
+}
+f(3)
+```
+* With lexical scoping, the value of y in the function g is looked up in the environment in which the function was defined, in this case the global environment, so the value of y is 10.
+* With dynamic scoping, the value of y is looked up in the environment from which the function was called (sometimes referred to as the *calling environment*).
+  + In R the calling environment is known as the *parent frame*.
+* So the value of y would be 2
+
+When a function is *defined* in the global environment and is subsequently *called* from the global environment, then the defining environment and the calling environment are the same. This can sometimes give the appearance of dynamic scoping.
+```{r}
+g <- function(x){ # x is a formal argument
+  a <- 3  # local variable
+  x+a+k   # k is a free variable
+}
+#g(2) Error in g(2) : object 'k' not found
+k <-3
+g(2)
+```
+other languages that support lexical scoping are Scheme, Perl, Python and Common Lisp (all languages that converge to Lisp)
+
+
+### Consequences of lexical scoping
+
+* In R, all objects must be stored in memory (hence large datasets can be a limiting factor)
+* All functions must carry a pointer to their respective defining environments, which coulc be anywhere.
+* In S-PLUS, free variables are always looked up in the global workspace, so everything can be stored on the disk because the *defining environmnet* of all functions is the same.
