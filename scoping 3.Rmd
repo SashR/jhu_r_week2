@@ -1,0 +1,67 @@
+---
+title: "jhu_r_w2_3"
+author: "Sashin"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Week 2 -- Scoping Rules -- Lexical Scoping
+### Application: Optimization
+Why is any of this useful?
+
+* Optimization routines in R like *optim*, *nim*, and *optimize* require you to pass a function whose argument is a vector of parameters (e.g. a log-likelihood)
+* However, an object function might depend on a host of other things besides its parameters (like *data*)
+* When writing software which does optimization, it may be desirable to allow the user to hold certain parameters  fixed.
+
+### Maximizing a Normal Likelihood
+Write a *constructor* function (creates an objective function)
+```{r}
+make.NegLokLik <-function(data, fixed=c(FALSE,FALSE)){
+  params <- fixed
+  function(p){
+    parms[!fixed] <- p
+    mu <- params[1]
+    sigma <- params[2]
+    a <- -0.5*length(data)*log(2*pi*sigma^2)
+    b <- -sum((data-mu)^2) / (sigma^2)
+    -(a+b)
+  }
+}
+```
+NOTE: Optimization functions in R *minimize* functions, so you need to use the negative log-likelihood
+
+```{r}
+set.seed(1); normals <- rnorm(100, 1, 2)
+nLL <- make.NegLokLik(normals)
+nLL
+ls(environment(nLL))
+```
+When you define a function inside another one there will be a pointer to the parent function (environment).
+
+"data" is set to be the value of normals which was passed to the constructor function.
+
+### Estimating Parameters
+```{r}
+#optim(c(mu=0,sigma=1), nLL)
+
+# Fixing ro to 2
+#nLL <- make.NegLokLik(normals, c(FALSE,2))
+#optimize(nLL, c(-1,3))$minimum
+# Fixing mu to 1
+#nLL <- make.NegLokLik(normals, c(1,FALSE))
+#optimize(nLL, c(LE-6,10))$minimum
+```
+
+
+### Lexical scoping summary
+
+* Objective functions can be *built* which contain all of the necessary data for evaluating the function.
+* No need to carry around long argument lists - useful for interactive and exploratory work.
+* Code can be simplified and cleaned up
+
+* For more information, check out article *"Lexical Scope and Statistical Computing"* by Robert Gentlemen
+
