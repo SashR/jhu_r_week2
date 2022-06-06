@@ -1,0 +1,18 @@
+---
+title: "jhu_ds2_week2_5"
+author: "Sashin"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Week 2 
+### Coding standards in R
+
+1. Always use text files / text editor. It is ubiquitous
+2. Indent your code. Improves readability.
+3. Limit the width of your code (80 columns). Indenting can be adjusted in RStudio. Go to Preferences -> Code Editing -> tab width. Recommended indent of 8 and 80 column margin. Helps enforce other standards (i.e. not nesting too many loops / control structures)
+4. Limit the length of individual functions. Makes them easier to read, reuse and debug. Error messages point to a function when an error occurs, if that function is 800 lines long there is a lot of code that might be an issue. Compare this if the function is 8 lines long.
