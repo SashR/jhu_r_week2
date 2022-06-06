@@ -1,0 +1,110 @@
+---
+title: "jhu_ds2_w2_6"
+author: "Sashin"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## week 2 -- Dates and Time
+### Dates and times in R
+R has developed a special representation of dates and times:
+
+* Date are represented by the *Date* class.
+* Times are represented by the *POSIXct* or the *POSIXlt* class
+* Dates are stored internally as the number of days since 1970-01-01
+* Times are stored internally as the number of seconds since 1970-01-01
+
+### Dates in R
+Dates are represented by the Date class and can be coerced from a character string using the *as.Date()* function:
+```{r}
+x <- as.Date("1970-01-01")
+x
+unclass(x)
+unclass(as.Date("1970-01-08"))
+```
+Dates before "1970-01-01" will be represented as negative numbers, since that date is 0. Dates are measured with respect to that date.
+
+### Times in R
+Times are represented using the *POSIXct* or the *POSIXlt* class, "POSIX" is a family of computing standards:
+
+* *POSIXct* is just a very large integer under the hood; it is a useful class when you want to store times in something like a data frame.
+* *POSIXlt* is a list underneath and it stores a bunch of other useful information like the day of the week, day of the year, month, day of the month.
+
+There are a number of generic functions that work on dates and times:
+
+* *weekdays*: give the day of the week
+* *months*: give the month name
+* *quarters*: give the quarter number ("Q1","Q2","Q3","Q4")
+
+Times can be coerced from a character string using the *as.POSIXlt* or *as.POSIXct* function:
+```{r}
+X <- Sys.time()
+x
+p<- as.POSIXlt(X)
+names(unclass(p))
+p$sec
+p$wday
+```
+
+You can also use the *POSIXct* format:
+```{r}
+x <- Sys.time()
+x
+unclass(x)
+# x$sec  -- Error: $ operator is invalid for atomic vectors
+p <- as.POSIXlt(x)
+p$sec
+```
+
+Finally, there is the *strptime* function in case your dates are written in a different format.
+```{r}
+datestring <- c("January 10, 2012 10:40", "December 9, 2011 9:10")
+x <- strptime(datestring, "%B %d, %Y %H:$M")
+x
+class(x)
+```
+Check docs for more details.
+
+
+### Operations on Dates and Times
+You can use mathematical operations on dates and times. Just + and -. You can also do comparisons (==, <=, etc).
+
+```{r}
+x <- as.Date("2012-01-01")
+dates <- c("02/27/92", "02/27/92", "01/14/92", "02/28/92", "02/01/92")
+times <- c("23:03:20", "22:29:56", "01:03:30", "18:21:03", "16:56:26")
+y <- paste(dates, times)
+strptime(y, "%m/%d/%y %H:%M:%S")
+y
+#x-y warning -- incompatible methods, non-numeric argument to binary operator
+
+x<- as.POSIXlt(X)
+z<- as.POSIXlt("2013-04-12")
+x-z
+```
+It even keeps track of leap years, leap seconds, daylight savings, and time zones
+use *tz* argument to specify timezones for *POSIXct* instances
+
+Lots of plotting function can recognize datetime objects.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
