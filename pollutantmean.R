@@ -3,7 +3,7 @@ pollutantmean <- function(directory, pollutant, id=1:332){
   fileName <- function(val){
     y <- if(val < 10)  "00"
     else if (val < 100)  "0"
-    else  "0"
+    else  ""
     paste("./",directory,"/",y,val,".csv", sep = "")
   }
   # read first data frame

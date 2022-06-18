@@ -1,9 +1,11 @@
 corr <- function(directory, threshold = 0){
-  z <- complete(directory, 1:10)
+  z <- complete(directory)
   zSliced <- z[z$nobs > threshold,]
+  
+  
 }
 
-cr <- corr("specdata", 150)
+cr <- corr("specdata", 950)
 cr
 head(cr)
 ## [1] -0.01895754 -0.14051254 -0.04389737 -0.06815956 -0.12350667 -0.07588814
@@ -44,3 +46,17 @@ summary(cr)
 length(cr)
 
 ## [1] 323
+
+
+cc <- complete("specdata", c(6, 10, 20, 34, 100, 200, 310))
+print(cc$nobs)
+
+cc <- complete("specdata", 54)
+print(cc$nobs)
+
+
+RNGversion("3.5.1")  
+set.seed(42)
+cc <- complete("specdata", 332:1)
+use <- sample(332, 10)
+print(cc[use, "nobs"])
